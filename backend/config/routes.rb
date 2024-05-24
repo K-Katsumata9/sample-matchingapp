@@ -1,5 +1,9 @@
 Rails.application.routes.draw do
-  devise_for :users
+  devise_for :users,
+		controllers: { registrations: 'registrations' }
 
-	root to: "top#index"
+	root "top#index"
+
+	resources :users, only: [:show]
+
 end
