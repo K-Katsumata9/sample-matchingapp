@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import Hammer from 'hammerjs'
+
 if(location.pathname == "/users") {
   $(function () {
     let allCards = document.querySelectorAll('.swipe--card');
@@ -7,10 +8,8 @@ if(location.pathname == "/users") {
 
     function initCards() {
 
-      // この行を追加する
       let newCards = document.querySelectorAll('.swipe--card:not(.removed)');
 
-      // この行を編集する
       newCards.forEach(function (card, index) {
         card.style.zIndex = allCards.length - index;
         card.style.transform = 'scale(' + (20 - index) / 20 + ') translateY(-' + 30 * index + 'px)';
@@ -43,7 +42,6 @@ if(location.pathname == "/users") {
         event.target.style.transform = 'translate(' + event.deltaX + 'px, ' + event.deltaY + 'px) rotate(' + rotate + 'deg)';
       });
 
-      // ==========ここから追加する==========
       hammertime.on('panend', function (event) {
         el.classList.remove('moving');
         swipeContainer.classList.remove('swipe_like');
@@ -53,6 +51,8 @@ if(location.pathname == "/users") {
 
         let keep = Math.abs(event.deltaX) < 200
         event.target.classList.toggle('removed', !keep);
+
+				let reaction = event.deltaX > 0 ? "like" : "dislike";
 
         if (keep) {
           event.target.style.transform = '';
@@ -65,12 +65,32 @@ if(location.pathname == "/users") {
           let yMulti = event.deltaY / 80;
           let rotate = xMulti * yMulti;
 
+					postReaction(el.id, reaction);
+
           event.target.style.transform = 'translate(' + toX + 'px, ' + (toY + event.deltaY) + 'px) rotate(' + rotate + 'deg)';
 
           initCards();
         }
       });
     });
+
+		function postReaction(user_id, reaction) {
+			$.ajax({
+				url: "reactions.json",
+				type: "POST",
+				datatype: "json",
+				headers: {
+					'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+				},
+				data: {
+					user_id: user_id,
+					reaction: reaction,
+				}
+			})
+			.done(function () {
+				console.log("done!")
+			})
+		}
 
 		function createButtonListener(reaction) {
 			let cards = document.querySelectorAll('.swipe--card:not(.removed)');
@@ -80,6 +100,11 @@ if(location.pathname == "/users") {
 			let moveOutWidth = document.body.clientWidth * 2;
 
 			let card = cards[0];
+
+			let user_id = card.id;
+
+			postReaction(user_id, reaction);
+
 			card.classList.add('removed');
 
 			if (reaction == "like") {

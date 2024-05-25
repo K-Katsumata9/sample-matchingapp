@@ -10,7 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_24_123938) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_25_115127) do
+  create_table "reactions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.integer "status", null: false
+    t.bigint "to_user_id", null: false
+    t.bigint "from_user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["from_user_id"], name: "index_reactions_on_from_user_id"
+    t.index ["to_user_id"], name: "index_reactions_on_to_user_id"
+  end
+
+  create_table "reactios", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -27,4 +42,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_24_123938) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "reactions", "users", column: "from_user_id"
+  add_foreign_key "reactions", "users", column: "to_user_id"
 end

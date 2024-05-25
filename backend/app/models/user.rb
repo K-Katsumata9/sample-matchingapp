@@ -1,4 +1,5 @@
 class User < ApplicationRecord
+	has_many :reactions
   validates :name, presence: true
 	validates :self_introduction, length: {maximum: 500}
 
