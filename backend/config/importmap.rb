@@ -6,3 +6,5 @@ pin "scheduler" # @0.23.2
 pin "@hotwired/turbo-rails", to: "turbo.js"
 pin "jquery" # @3.7.1
 pin "hammerjs" # @2.0.8
+pin "@rails/actioncable", to: "actioncable.esm.js"
+pin_all_from "app/javascript/channels", under: "channels"
