@@ -9,7 +9,7 @@ class ChatRoomChannel < ApplicationCable::Channel
   end
 
   def speak(data)
-    ActionCable.server.broadcast('chat_room_channel', {chat_message: data['chat_message']})
+    ActionCable.server.broadcast('chat_room_channel', { chat_message: data['chat_message']})
   end
 
 end
